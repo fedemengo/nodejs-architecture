@@ -8,14 +8,17 @@ const config = {
         warn: 1,
         ok: 2,
         info: 3,
-        verbose: 5,
-        debug: 5
+        network: 4,
+        debug: 5,
+        verbose: 6
     },
     colors: {
         error: 'red',
         warn: 'magenta',
         ok: 'green',
         info: 'cyan',
+        network: 'yellow',
+        debug: 'grey',
         verbose: 'grey'
     }
 };
@@ -23,14 +26,19 @@ const config = {
 winston.addColors(config.colors);
 
 const logger = fileName => {
-    const myFormat = printf(({ level, message, timestamp }) => {
+    const myFormat = printf(({ level, message }) => {
         return `[${level}] "${message}" (in ./${fileName})`;
     });
 
     return winston.createLogger({
         levels: config.levels,
         format: combine(format.colorize(), myFormat),
-        transports: [new winston.transports.Console()]
+        transports: [
+            new winston.transports.Console({
+                level: 'debug',
+                prettyPrint: true
+            })
+        ]
     });
 };
 

@@ -5,13 +5,7 @@ const express = require('express');
  */
 const { global } = require('./controllers/middleware');
 
-/**
- * Routers
- */
-const { root, cars, users, chat } = require('./routes');
-
 const app = express();
-
 /**
  * Globals
  */
@@ -26,15 +20,28 @@ app.on('ready', async () => {
 
     try {
         await app.get('mysql').test();
-        await app.get('firebase').test();
+        //await app.get('firebase').test();
     } catch (e) {}
 
     app.use(global());
 
-    app.use('/', root);
-    app.use('/users', users);
-    app.use('/cars', cars);
-    app.use('/chat', chat);
+    const diContainer = app.get('DI');
+    // associate component/dep to a concrete instance
+    diContainer.register('database', diContainer.get('mysql'));
+    //diContainer.register('database', diContainer.get('firebase'));
+    // associate component/deps to its factory
+    diContainer.factory('data-service', require('./services/data'));
+    diContainer.factory('data-controller', require('./controllers/data'));
+
+    /**
+     * Routers
+     */
+    const { root, data, users, chat } = require('./routes');
+
+    //app.use('/', root);
+    app.use('/data', data);
+    //app.use('/cars', cars);
+    //app.use('/chat', chat);
 });
 
 app.on('shutdown', () => {

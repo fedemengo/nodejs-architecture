@@ -1,0 +1,33 @@
+const statusCodes = require('http-status-codes');
+
+// The `service` parameter will be inject using the factory associated to `data-service`
+module.exports = service => {
+    const insertData = async (req, res) => {
+        const { key, value } = req.query;
+        const { ok, err } = await service.put(key, value);
+
+        if (ok) {
+            res.status(statusCodes.CREATED).json([]);
+        } else {
+            res.status(statusCodes.INTERNAL_SERVER_ERROR).json(err);
+        }
+    };
+
+    const retrieveData = async (req, res) => {
+        const { key } = req.query;
+        const { ok, result, err } = await service.get(key);
+
+        if (ok) {
+            res.status(statusCodes.OK).json(result);
+        } else {
+            res.status(statusCodes.INTERNAL_SERVER_ERROR).json(err);
+        }
+    };
+
+    return {
+        insertData,
+        retrieveData
+    };
+};
+
+module.exports._inject = ['data-service'];

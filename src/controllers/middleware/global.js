@@ -9,11 +9,7 @@ const global = () => [
     morgan('dev'),
     bodyParser.urlencoded({ extended: true }),
     bodyParser.json(),
-    helmet(),
-    (req, res, next) => {
-        console.log('Test middleware');
-        next();
-    }
+    helmet()
 ];
 
 const shutdown = (req, res) => {

@@ -47,19 +47,24 @@ server.on('error', error => {
 });
 
 server.on('listening', async () => {
+    // Use app to make DI container available everywhere
+    app.set('DI', require('../src/utils/diContainer'));
+
     let setupOk = true;
     const addrInfo = server.address();
     logger.info(`Server listening on ${addrInfo.address}:${addrInfo.port}`);
     try {
         await mysql.connect();
-        await firebase.connect();
+        //await firebase.connect();
     } catch (e) {
         setupOk = false;
     }
 
     if (setupOk) {
-        app.set('mysql', mysql);
-        app.set('firebase', firebase);
+        const diContainer = app.get('DI');
+        diContainer.register('mysql', mysql);
+        //diContainer.register('firebase', firebase);
+
         app.emit('ready');
     } else {
         logger.error('Setup failed');
