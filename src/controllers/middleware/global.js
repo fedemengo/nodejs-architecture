@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 
+const errorHandler = require('./errorHandler');
 const global = () => [
     cors(),
     morgan('dev'),
@@ -12,7 +13,7 @@ const global = () => [
     helmet()
 ];
 
-const shutdown = (req, res) => {
+const shutdown = () => (req, res) => {
     res.setHeader('Connection', 'close');
     res.send(
         httpStatus.SERVICE_UNAVAILABLE,
@@ -22,3 +23,4 @@ const shutdown = (req, res) => {
 
 module.exports = global;
 module.exports.shutdown = shutdown;
+module.exports.errorHandler = errorHandler;

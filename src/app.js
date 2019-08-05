@@ -52,6 +52,7 @@ forEach(require('./routes'), (route, name) => {
     logger.info(`Loading route ${name}`);
     app.use(`/${name}`, diContainer.get(`${name}-route`));
 });
+app.use(global.errorHandler());
 
 /**
  * Configuration when the server startup
@@ -71,7 +72,7 @@ app.on('ready', async () => {
  * Set specific headers when the server is shutting down
  */
 app.on('shutdown', () => {
-    app.use(global.shutdown);
+    app.use(global.shutdown());
     logger.info('Shutting down app');
 });
 
