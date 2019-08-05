@@ -8,12 +8,54 @@ const { global } = require('./controllers/middleware');
 /**
  * Globals
  */
+const { sleep } = require('../src/utils');
 const logger = require('../src/utils/logger')('src/app.js');
 
 /**
- * Set specific headers when the server is shutting down
+ * Loaders for connecting to the databases
  */
+const { mysql, firebase } = require('./loaders').db;
 
+/**
+ * App configuration
+ */
+app.set('DI', require('../src/utils/diContainer'));
+app.set('mysql', mysql);
+app.set('firebase', firebase);
+
+/**
+ * GLobal middleware
+ */
+app.use(global());
+
+/**
+ * Register and load dependencies
+ */
+const diContainer = app.get('DI');
+// associate component/dep to a concrete instance
+diContainer.register('database', mysql);
+//diContainer.register('database', diContainer.get('firebase'));
+
+// DATA - associate component/deps to its factory
+diContainer.factory('data-service', require('./services/data'));
+diContainer.factory('data-controller', require('./controllers/data'));
+// USERS - associate component/deps to its factory
+diContainer.factory('users-controller', require('./controllers/users'));
+
+/**
+ * Routers
+ */
+forEach(require('./routes'), (route, name) => {
+    // register route factory
+    diContainer.factory(`${name}-route`, route);
+    // load component (after injecting dependencies)
+    logger.info(`Loading route ${name}`);
+    app.use(`/${name}`, diContainer.get(`${name}-route`));
+});
+
+/**
+ * Configuration when the server startup
+ */
 app.on('ready', async () => {
     logger.info('App ready');
 
@@ -22,31 +64,12 @@ app.on('ready', async () => {
         //await app.get('firebase').test();
     } catch (e) {}
 
-    app.use(global());
-
-    const diContainer = app.get('DI');
-    // associate component/dep to a concrete instance
-    diContainer.register('database', diContainer.get('mysql'));
-    //diContainer.register('database', diContainer.get('firebase'));
-
-    // associate component/deps to its factory
-    diContainer.factory('data-service', require('./services/data'));
-    diContainer.factory('data-controller', require('./controllers/data'));
-
-    diContainer.factory('users-controller', require('./controllers/users'));
-
-    /**
-     * Routers
-     */
-    const routes = require('./routes');
-    forEach(routes, (route, name) => {
-        // register route factory
-        diContainer.factory(`${name}-route`, route);
-        // load component (after injecting dependencies)
-        app.use(`/${name}`, diContainer.get(`${name}-route`));
-    });
+    logger.info('Setup done');
 });
 
+/**
+ * Set specific headers when the server is shutting down
+ */
 app.on('shutdown', () => {
     app.use(global.shutdown);
     logger.info('Shutting down app');

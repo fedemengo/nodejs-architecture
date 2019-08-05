@@ -13,10 +13,6 @@ const http = require('http');
 const serverConfig = require('config').get('server');
 
 const logger = require('../src/utils/logger')('bin/www');
-/**
- * Loaders for connecting to the databases
- */
-const { mysql, firebase } = require('../src/loaders').db;
 
 /**
  * Create HTTP server.
@@ -47,24 +43,18 @@ server.on('error', error => {
 });
 
 server.on('listening', async () => {
-    // Use app to make DI container available everywhere
-    app.set('DI', require('../src/utils/diContainer'));
-
     let setupOk = true;
     const addrInfo = server.address();
     logger.info(`Server listening on ${addrInfo.address}:${addrInfo.port}`);
+
     try {
-        //await mysql.connect();
-        //await firebase.connect();
+        //await app.get('mysql').connect();
+        //await app.get('firebase').connect();
     } catch (e) {
         setupOk = false;
     }
 
     if (setupOk) {
-        const diContainer = app.get('DI');
-        diContainer.register('mysql', mysql);
-        //diContainer.register('firebase', firebase);
-
         app.emit('ready');
     } else {
         logger.error('Setup failed');
@@ -77,8 +67,8 @@ server.on('shutdown', async () => {
     logger.info('Shutting down server');
 
     try {
-        await mysql.close();
-        await firebase.close();
+        await app.get('mysql').close();
+        await app.get('firebase').close();
     } catch (e) {}
 
     server.close(() => {
