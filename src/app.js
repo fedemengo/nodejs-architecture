@@ -13,7 +13,9 @@ const logger = require('../src/utils/logger')('src/app.js');
 /**
  * Loaders for connecting to the databases
  */
-const { mysql, firebase } = require('./loaders').db;
+const {
+    db: { mysql, firebase }
+} = require('./loaders');
 
 /**
  * App configuration
@@ -35,7 +37,6 @@ const diContainer = app.get('DI');
 // associate component/dep to a concrete instance
 diContainer.register('database', mysql);
 //diContainer.register('database', diContainer.get('firebase'));
-
 // DATA - associate component/deps to its factory
 diContainer.factory('data-service', require('./services/data'));
 diContainer.factory('data-controller', require('./controllers/data'));
@@ -52,7 +53,6 @@ forEach(require('./routes'), (route, name) => {
     logger.info(`Loading route ${name}`);
     app.use(`/${name}`, diContainer.get(`${name}-route`));
 });
-app.use(global.errorHandler());
 
 /**
  * Configuration when the server startup

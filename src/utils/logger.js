@@ -1,6 +1,6 @@
 const winston = require('winston');
 const { format } = winston;
-const { combine, printf } = format;
+const { colorize, combine, printf, label } = format;
 
 const config = {
     levels: {
@@ -9,6 +9,7 @@ const config = {
         ok: 2,
         info: 3,
         network: 4,
+        joi: 5,
         debug: 5,
         verbose: 6
     },
@@ -18,6 +19,7 @@ const config = {
         ok: 'green',
         info: 'cyan',
         network: 'yellow',
+        joi: 'bold white blueBG',
         debug: 'grey',
         verbose: 'grey'
     }
@@ -26,13 +28,19 @@ const config = {
 winston.addColors(config.colors);
 
 const logger = fileName => {
-    const myFormat = printf(({ level, message, ...meta }) => {
-        return `[${level}] ${message} (in ./${fileName})`;
+    const myFormat = printf(({ level, message, label }) => {
+        return `[${level}] ${message} (in ./${label})`;
     });
 
     return winston.createLogger({
         levels: config.levels,
-        format: combine(format.colorize(), myFormat),
+        format: combine(
+            colorize({
+                all: true
+            }),
+            label({ label: fileName }),
+            myFormat
+        ),
         transports: [
             new winston.transports.Console({
                 level: 'debug',

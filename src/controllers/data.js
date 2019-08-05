@@ -14,7 +14,7 @@ module.exports = service => {
     };
 
     const retrieveData = async (req, res) => {
-        const { key } = req.query;
+        const { key } = req._sanitized;
         const { ok, result, err } = await service.get(key);
 
         if (ok) {
