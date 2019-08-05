@@ -1,4 +1,4 @@
-const statusCodes = require('http-status-codes');
+const httpStatus = require('http-status-codes');
 
 // The `service` parameter will be inject using the factory associated to `data-service`
 module.exports = service => {
@@ -7,9 +7,9 @@ module.exports = service => {
         const { ok, err } = await service.put(key, value);
 
         if (ok) {
-            res.status(statusCodes.CREATED).json([]);
+            res.status(httpStatus.CREATED).json([]);
         } else {
-            res.status(statusCodes.INTERNAL_SERVER_ERROR).json(err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         }
     };
 
@@ -18,9 +18,9 @@ module.exports = service => {
         const { ok, result, err } = await service.get(key);
 
         if (ok) {
-            res.status(statusCodes.OK).json(result);
+            res.status(httpStatus.OK).json(result);
         } else {
-            res.status(statusCodes.INTERNAL_SERVER_ERROR).json(err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         }
     };
 

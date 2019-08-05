@@ -1,11 +1,10 @@
-const express = require('express');
-
+const app = require('express')();
+const { forEach } = require('lodash');
 /**
  * Middleware
  */
 const { global } = require('./controllers/middleware');
 
-const app = express();
 /**
  * Globals
  */
@@ -29,6 +28,7 @@ app.on('ready', async () => {
     // associate component/dep to a concrete instance
     diContainer.register('database', diContainer.get('mysql'));
     //diContainer.register('database', diContainer.get('firebase'));
+
     // associate component/deps to its factory
     diContainer.factory('data-service', require('./services/data'));
     diContainer.factory('data-controller', require('./controllers/data'));
@@ -36,12 +36,13 @@ app.on('ready', async () => {
     /**
      * Routers
      */
-    const { root, data, users, chat } = require('./routes');
-
-    //app.use('/', root);
-    app.use('/data', data);
-    //app.use('/cars', cars);
-    //app.use('/chat', chat);
+    const routes = require('./routes');
+    forEach(routes, (route, name) => {
+        // register route factory
+        diContainer.factory(`${name}-route`, route);
+        // load component (after injecting dependencies)
+        app.use(`/${name}`, diContainer.get(`${name}-route`));
+    });
 });
 
 app.on('shutdown', () => {

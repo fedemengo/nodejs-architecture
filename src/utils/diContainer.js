@@ -27,11 +27,14 @@ class DIContainer {
     }
 
     inject(_factory) {
-        // load all dependencies of the current factory
-        const args = _factory._inject.map(dep => diContainer.get(dep));
+        // load all dependencies of the current factory if the component has dependencies
+        const args = _factory._inject
+            ? _factory._inject.map(dep => diContainer.get(dep))
+            : null;
         return _factory.apply(null, args);
     }
 }
+
 const diContainer = new DIContainer();
 
 module.exports = diContainer;

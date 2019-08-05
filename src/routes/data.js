@@ -1,15 +1,23 @@
-const app = require('../app');
 const router = require('express').Router();
+const logger = require('../utils/logger')('src/routes/data.js');
 
-const diContainer = app.get('DI');
-const dataController = diContainer.get('data-controller');
+module.exports = controller => {
+    router.use((req, res, next) => {
+        logger.network(
+            `Received request: ${req.method} ${req.baseUrl}${req.path}`
+        );
+        next();
+    });
 
-router.post('/insert', dataController.insertData);
-router.get('/retrieve', dataController.retrieveData);
+    router.post('/insert', controller.insertData);
 
-/* GET users listing. */
-router.get('/', (req, res, next) => {
-    res.send('respond with a resource');
-});
+    router.get('/retrieve', controller.retrieveData);
 
-module.exports = router;
+    router.get('/health', (req, res, next) =>
+        res.json({ message: 'OK' }).end()
+    );
+
+    return router;
+};
+
+module.exports._inject = ['data-controller'];

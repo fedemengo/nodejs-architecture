@@ -26,8 +26,8 @@ const config = {
 winston.addColors(config.colors);
 
 const logger = fileName => {
-    const myFormat = printf(({ level, message }) => {
-        return `[${level}] "${message}" (in ./${fileName})`;
+    const myFormat = printf(({ level, message, ...meta }) => {
+        return `[${level}] ${message} (in ./${fileName})`;
     });
 
     return winston.createLogger({

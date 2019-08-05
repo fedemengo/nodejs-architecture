@@ -54,7 +54,7 @@ server.on('listening', async () => {
     const addrInfo = server.address();
     logger.info(`Server listening on ${addrInfo.address}:${addrInfo.port}`);
     try {
-        await mysql.connect();
+        //await mysql.connect();
         //await firebase.connect();
     } catch (e) {
         setupOk = false;
