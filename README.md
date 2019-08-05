@@ -19,6 +19,12 @@
 
 ### About
 
+#### Testing
+
+Testing on Travis CI [![Build Status](https://travis-ci.org/fedemengo/nodejs-architecture.svg?branch=master)](https://travis-ci.org/fedemengo/nodejs-architecture)
+
+The testing procedure consist of mocha/chai test cases are are run during build by Travis CI
+
 ### Notes
 
 -   https://github.com/i0natan/nodebestpractices
