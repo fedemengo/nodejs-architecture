@@ -15,6 +15,7 @@
     -   `/routes` - Initilize and associate routes with controllers
     -   `/services` - Execute the logic for a given actions
     -   `/utils` - Utility libraries for formatting, validation
+-   `/tests` - Contains all test cases for the app
 
 ### About
 
