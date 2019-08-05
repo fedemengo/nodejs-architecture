@@ -29,6 +29,12 @@
 -   https://softwareontheroad.com/ideal-nodejs-project-structure/
 -   https://medium.com/codebase/structure-of-a-nodejs-api-project-cdecb46ef3f8
 
+#### Patterns
+
+-   [x] **Dependency Injection** - To load all required modules, I'm using a Dependency Injection Container as described in [Node.js Design Patterns](https://www.nodejsdesignpatterns.com/). This pattern allow to load a modules by specifying its dependencies by name and registering the appropriate factory for instancing the name, in this way it's easy to avoid hardcoded dependencies.
+
+-   [ ] **Proxy** - Tools like [Joi](https://github.com/hapijs/joi) can be easily added to the application by using a Proxy, this would allow for a quick removal of the tool without having to modify the code
+
 ##### Details
 
 -   Bin
