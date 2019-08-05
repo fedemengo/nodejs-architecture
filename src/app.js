@@ -33,6 +33,8 @@ app.on('ready', async () => {
     diContainer.factory('data-service', require('./services/data'));
     diContainer.factory('data-controller', require('./controllers/data'));
 
+    diContainer.factory('users-controller', require('./controllers/users'));
+
     /**
      * Routers
      */
