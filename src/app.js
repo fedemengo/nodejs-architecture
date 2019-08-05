@@ -8,7 +8,6 @@ const { global } = require('./controllers/middleware');
 /**
  * Globals
  */
-const { sleep } = require('../src/utils');
 const logger = require('../src/utils/logger')('src/app.js');
 
 /**
@@ -27,6 +26,7 @@ app.set('firebase', firebase);
  * GLobal middleware
  */
 app.use(global());
+logger.info('Load global middleware');
 
 /**
  * Register and load dependencies
@@ -64,7 +64,7 @@ app.on('ready', async () => {
         //await app.get('firebase').test();
     } catch (e) {}
 
-    logger.info('Setup done');
+    logger.info('App setup done');
 });
 
 /**

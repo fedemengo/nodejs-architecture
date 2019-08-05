@@ -10,9 +10,9 @@ describe('Testing "/users" route', () => {
             .get('/users/123')
             .end((err, res) => {
                 res.should.have.status(200);
-                res.body.should.have
-                    .property('data')
-                    .to.deep.equal({ id: '123' });
+                res.body.should.have.nested
+                    .property('data.id')
+                    .to.be.equal('123');
                 done();
             });
     });
