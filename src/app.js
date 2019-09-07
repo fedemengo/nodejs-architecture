@@ -38,10 +38,9 @@ const diContainer = app.get('DI');
 diContainer.register('database', mysql);
 //diContainer.register('database', diContainer.get('firebase'));
 // DATA - associate component/deps to its factory
-diContainer.factory('data-service', require('./services/data'));
-diContainer.factory('data-controller', require('./controllers/data'));
-// USERS - associate component/deps to its factory
-diContainer.factory('users-controller', require('./controllers/users'));
+diContainer.factory('youtube-service', require('./services/youtube'));
+diContainer.factory('musicpleer-service', require('./services/musicpleer'));
+diContainer.factory('download-controller', require('./controllers/download'));
 
 /**
  * Routers
@@ -50,7 +49,7 @@ forEach(require('./routes'), (route, name) => {
     // register route factory
     diContainer.factory(`${name}-route`, route);
     // load component (after injecting dependencies)
-    logger.info(`Loading route ${name}`);
+    logger.info(`Loading route '/${name}'`);
     app.use(`/${name}`, diContainer.get(`${name}-route`));
 });
 
@@ -66,6 +65,7 @@ app.on('ready', async () => {
     } catch (e) {}
 
     logger.info('App setup done');
+    app.use(global.errorHandler());
 });
 
 /**

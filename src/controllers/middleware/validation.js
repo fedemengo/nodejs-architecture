@@ -1,21 +1,8 @@
 const Joi = require('joi');
-const funcurl = require('funcurl');
-const httpStatus = require('http-status-codes');
 const logger = require('../../utils/logger')(
     'src/controllers/middleware/validation.js'
 );
-const rules = require('../../utils/validation-rules');
 const { pick } = require('lodash');
-
-const um = new funcurl();
-
-um.add(
-    '/data/retrieve',
-    'GET',
-    Joi.object().keys({
-        key: rules.id.required()
-    })
-);
 
 const options = {
     abortEarly: true,
@@ -30,11 +17,11 @@ class JoiError extends Error {
     }
 }
 
-module.exports = (config = {}) => (req, res, next) => {
+module.exports = (um, config = {}) => (req, res, next) => {
     const route = req.path;
     const method = req.method;
 
-    logger.joi(`Validating ${method}:${route}`);
+    logger.joi(`Validating ${method}:${um.setBase}${route}`);
 
     if (um.match(route, method)) {
         const { func, params } = um.get(route, method);
@@ -60,11 +47,9 @@ module.exports = (config = {}) => (req, res, next) => {
             throw new Error(`Logic error inside URL matcher`);
         }
     } else {
-        next(
-            new JoiError(
-                `Validation not defined for route ${method}:${route}`,
-                httpStatus.NOT_FOUND
-            )
+        logger.warn(
+            `Joi error: Validation is not defined for the route ${method} : ${route}`
         );
+        return next();
     }
 };

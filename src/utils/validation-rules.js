@@ -15,5 +15,6 @@ module.exports = {
     phone: Joix.string().phoneNumber(),
     postalCode: Joi.number()
         .min(10000)
-        .max(9999)
+        .max(9999),
+    default: Joi
 };

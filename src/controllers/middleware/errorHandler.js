@@ -20,7 +20,7 @@ module.exports = () => (err, req, res, next) => {
     }
 
     if (err.name === 'ValidationError') {
-        logger.error('Validation error');
+        logger.error('Validation error ' + err.message);
         return res
             .status(httpStatus.BAD_REQUEST)
             .json({ message: err.message });
@@ -40,7 +40,8 @@ module.exports = () => (err, req, res, next) => {
     }
 
     // default to 500 server error
-    logger.error('General server error' + err.message);
+    logger.error('General server error ' + err.message);
+
     return res
         .status(httpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: err.message });

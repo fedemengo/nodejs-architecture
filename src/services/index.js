@@ -1,5 +1,7 @@
-const data = require('./data');
+const youtube = require('./youtube')
+const musicpleer = require("./musicpleer")
 
 module.exports = {
-    data
-};
+    youtube,
+    musicpleer
+}

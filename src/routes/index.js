@@ -1,7 +1,5 @@
-const data = require('./data');
-const users = require('./users');
+const download = require('./download');
 
 module.exports = {
-    data,
-    users
+    download
 };

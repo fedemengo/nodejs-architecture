@@ -5,16 +5,13 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 
 const errorHandler = require('./errorHandler');
-const validation = require('./validation');
 
 const global = () => [
     cors(),
     morgan('dev'),
     bodyParser.urlencoded({ extended: true }),
     bodyParser.json(),
-    helmet(),
-    validation({ pack: true }),
-    errorHandler()
+    helmet()
 ];
 
 const shutdown = () => (req, res) => {
@@ -27,3 +24,4 @@ const shutdown = () => (req, res) => {
 
 module.exports = global;
 module.exports.shutdown = shutdown;
+module.exports.errorHandler = errorHandler;
