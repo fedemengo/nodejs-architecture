@@ -37,10 +37,16 @@ const diContainer = app.get('DI');
 // associate component/dep to a concrete instance
 diContainer.register('database', mysql);
 //diContainer.register('database', diContainer.get('firebase'));
-// DATA - associate component/deps to its factory
+// Other logic
 diContainer.factory('youtube-service', require('./services/youtube'));
 diContainer.factory('musicpleer-service', require('./services/musicpleer'));
 diContainer.factory('download-controller', require('./controllers/download'));
+// DATA - associate component/deps to its factory
+diContainer.factory('data-service', require('./services/data'));
+diContainer.factory('data-controller', require('./controllers/data'));
+// USERS - associate component/deps to its factory
+diContainer.factory('users-controller', require('./controllers/users'));
+diContainer.factory('users-controller', require('./controllers/users'));
 
 /**
  * Routers
@@ -54,6 +60,11 @@ forEach(require('./routes'), (route, name) => {
 });
 
 /**
+ * User errorHandler as last middleware to catch errors
+ */
+app.use(global.errorHandler());
+
+/**
  * Configuration when the server startup
  */
 app.on('ready', async () => {
@@ -65,7 +76,6 @@ app.on('ready', async () => {
     } catch (e) {}
 
     logger.info('App setup done');
-    app.use(global.errorHandler());
 });
 
 /**

@@ -1,11 +1,10 @@
 const router = require('express').Router();
 const logger = require('../utils/logger')('src/routes/data.js');
+
 const Joi = require('joi');
 const { validation } = require('../controllers/middleware');
 const rules = require('../utils/validation-rules');
 const funcurl = require('funcurl');
-
-const bodyParser = require('body-parser');
 
 const um = new funcurl();
 
